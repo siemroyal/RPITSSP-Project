@@ -15,7 +15,6 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::paginate(100);
-        //convert code to json format
         return response()->json($categories);
     }
 
@@ -106,6 +105,20 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try{
+            $category = Category::find($id);
+            if($category){
+                $category->delete();
+                return response()->json([
+                    "message" => "Deleted category successfully",
+                    "data" => $category
+                ], 201);
+            }
+        }catch(\Exception $e){
+            return response()->json([
+                "error" => "Category not found",
+                "message" => $e->getMessage()
+            ], 500);
+        }
     }
 }
